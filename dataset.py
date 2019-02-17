@@ -3,8 +3,7 @@ import numpy as np
 
 
 def load_cifar10(num_batch_train, num_batch_test, mode='RGB'):
-    """
-    Load CIFAR-10 dataset with Tensorflow built-in function.
+    """Load CIFAR-10 dataset with Tensorflow built-in function.
     Generate and shuffle CIFAR-10 iterators via using tf.data.Data.
     :param num_batch_train: An integer.
     :param num_batch_test: An integer.
@@ -39,8 +38,7 @@ def load_cifar10(num_batch_train, num_batch_test, mode='RGB'):
 
 
 def inverse_specific_labeled_images(img, label, anomaly_label):
-    """
-    Inverse images which has specific labels via negative images and plus 1.
+    """Inverse images which has specific labels via negative images and plus 1.
     :param img: Floating point images in range of [0.0, 1.0]
                 with shape [batch_size, image_size, image_size, image_channel].
     :param label: A integer tensor with shape [batch_size,].
@@ -66,8 +64,7 @@ def inverse_specific_labeled_images(img, label, anomaly_label):
 
 
 def inverse_multiple_labeled_images(img, label, anomaly_label, normal_label):
-    """
-    Inverse images which has specific labels via negative images and plus 1.
+    """Inverse images which has specific labels via negative images and plus 1.
     :param img: Floating point images in range of [0.0, 1.0]
                 with shape [batch_size, image_size, image_size, image_channel].
     :param label: A integer tensor with shape [batch_size,].
@@ -96,39 +93,36 @@ def inverse_multiple_labeled_images(img, label, anomaly_label, normal_label):
 
 
 def hsv_to_tuv(hsv_img):
-    """
-    Convert HSV space images into TUV space images.
+    """Convert HSV space images into TUV space images.
     Note: TUV is purposed image space by Obada Al Alma.
     :param hsv_img: Floating point HSV images in range of [0.0, 1.0]
                     with shape [batch_size, image_size, image_size, image_channel].
                     Degree has an unit as radiance.
     :return: tuv_img: Floating point TUV images with same shape as input images.
     """
-    t = tf.sin(hsv_img[:, :, :, 0]) * hsv_img[:, :, :, 1]
-    u = tf.cos(hsv_img[:, :, :, 0]) * hsv_img[:, :, :, 1]
+    t = tf.sin(hsv_img[:, :, :, 0])*hsv_img[:, :, :, 1]
+    u = tf.cos(hsv_img[:, :, :, 0])*hsv_img[:, :, :, 1]
     v = hsv_img[:, :, :, 2]
     tuv_img = tf.stack([t, u, v], axis=-1)
     return tuv_img
 
 
 def tuv_to_hsv(tuv_img):
-    """
-    Converting TUV space images back to HSV space images.
+    """Converting TUV space images back to HSV space images.
     :param tuv_img: Floating point TUV images in range of [0.0, 1.0]
                     with shape [batch_size, image_size, image_size, image_channel].
                     Degree has an unit as radiance.
     :return hsv_img: Floating point HSV images with same shape as input images.
     """
-    h = tf.atan(tuv_img[:, :, :, 0] / tuv_img[:, :, :, 1])
-    s = tuv_img[:, :, :, 0] / tf.sin(h)
+    h = tf.atan(tuv_img[:, :, :, 0]/tuv_img[:, :, :, 1])
+    s = tuv_img[:, :, :, 0]/tf.sin(h)
     v = tuv_img[:, :, :, 2]
     hsv_img = tf.stack([h, s, v], axis=-1)
     return hsv_img
 
 
 def rearrange_label_loss(locat_label, locat_loss):
-    """
-    Load TXT files which contain a label and a loss for each test images.
+    """Load TXT files which contain a label and a loss for each test images.
     Rearrange labels in order and using that orders to reorder losses.
     :param locat_label: A string shows location of TXT file.
     :param locat_loss: A string shows location of TXT file.
