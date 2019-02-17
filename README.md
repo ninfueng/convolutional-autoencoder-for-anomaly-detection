@@ -1,5 +1,5 @@
 # Convolutional Anomaly Detection Autoencoder
-This is an re-implementation of "Reverse Reconstruction of Anomaly Input Using Autoencoders" from Akihiro Suzuki et al. and the improvement proposed by Al Aama Obada. For further information, please look at the report `report.pdf` or ask me.
+This is an implementation of "Reverse Reconstruction of Anomaly Input Using Autoencoders" from Akihiro Suzuki et al. The main distinction between this implementation and the paper is I changed the model from all fully connected layers to convolution related layers to increasing the capacity of model. This work also included the TUV space converting proposed by Al Aama Obada (Currently, the code did not supported).
 
 ## Requirements:
   1. Python 3.6.8
