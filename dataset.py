@@ -63,32 +63,43 @@ def inverse_specific_labeled_images(img, label, anomaly_label):
     return img
 
 
-def inverse_multiple_labeled_images(img, label, anomaly_label, normal_label):
+def inverse_multiple_labeled_images(img, label, anomaly_label):
     """Inverse images which has specific labels via negative images and plus 1.
     :param img: Floating point images in range of [0.0, 1.0]
                 with shape [batch_size, image_size, image_size, image_channel].
     :param label: A integer tensor with shape [batch_size,].
     :param anomaly_label: A list of integer of [0, 9]
-    :param normal_label: A list of integer in range of [0, 9]
     :return img: Images with some batch inversed with same shape as input images.
     """
-    assert type(anomaly_label) == list and type(normal_label) == list
+    assert type(anomaly_label) == list
     mask_anomaly = tf.where(tf.equal(label, anomaly_label[0]), tf.ones(label.shape), tf.zeros(label.shape))
-    for i in anomaly_label[1::]:
-        mask_anomaly = tf.add(
-            tf.where(tf.equal(label, anomaly_label[i - 1]), tf.ones(label.shape), tf.zeros(label.shape)), mask_anomaly)
-
+    for idx, i in enumerate(anomaly_label[1::]):
+        # Accumulate the anomaly mask from all of elements in anomaly_label.
+        # Each of loop will detect each label that in the anomaly_label or not?
+        # If True then, put the mask_anomaly as 1 otherwise, 0.
+        if idx < len(anomaly_label[1::]):
+            # Checking that the idx does not go out of anomaly mask idx.
+            mask_anomaly = tf.add(
+                tf.where(tf.equal(label, anomaly_label[idx + 1]), 
+                         tf.ones(label.shape), tf.zeros(label.shape)),
+                         mask_anomaly)
+    # For checking for given labels and anomaly masks work correctly.
+    # print(f'label {label}')
+    # print(f'mask_anomaly {mask_anomaly}')
+        
     if len(img._shape_as_list()) == 4:
         batch_size = mask_anomaly.shape[0]
         mask_anomaly = tf.reshape(mask_anomaly, [batch_size, 1, 1, 1])
     elif len(img._shape_as_list()) == 2:
         pass
     else:
-        raise NotImplementedError('Your img._shape_as_list(): {}'.format(img._shape_as_list()))
+        raise NotImplementedError('Your img._shape_as_list(): {}'.format(
+            img._shape_as_list()))
     mask_normal = 1.0 - mask_anomaly
     img = tf.cast(img, tf.float32)
     img = tf.subtract(
-        tf.multiply(tf.ones(img.shape), mask_anomaly), tf.multiply(img, mask_anomaly)) + tf.multiply(img, mask_normal)
+        tf.multiply(tf.ones(img.shape), mask_anomaly), 
+        tf.multiply(img, mask_anomaly)) + tf.multiply(img, mask_normal)
     return img
 
 

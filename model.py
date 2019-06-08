@@ -1,6 +1,5 @@
 import tensorflow as tf
 
-
 def unpool(value, name='unpool'):
     """From: https://github.com/tensorflow/tensorflow/issues/2169
     N-dimensional version of the unpooling operation from
@@ -62,8 +61,10 @@ class ConvolutionalAutoencoder(tf.keras.Model):
                 units=pooled_shape[0]*pooled_shape[1]*kernal2,
                 activation=tf.nn.relu,
                 kernel_initializer=init)
+            
             self.deflatten1 = tf.keras.layers.Reshape(
-                target_shape=(pooled_shape[0], pooled_shape[1], kernal2))
+                target_shape=(int(pooled_shape[0]), int(pooled_shape[1]), kernal2))
+            
             self.deconv1 = tf.keras.layers.Conv2DTranspose(
                 filters=kernal1,
                 kernel_size=5,
