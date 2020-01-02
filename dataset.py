@@ -10,7 +10,8 @@ def load_cifar10(num_batch_train, num_batch_test, mode='RGB'):
     :param mode: String in {'RGB', 'HSV', 'TUV'}
     :return train_slice, test_slice: Iterator for training and testing data.
     """
-    assert type(num_batch_train) == int and type(num_batch_test) == int
+    assert isinstance(num_batch_train, int)
+    assert isinstance(num_batch_test, int)
     dataset = tf.keras.datasets.cifar10
     (x_train, y_train), (x_test, y_test) = dataset.load_data()
     # By converting dtype to make Tensorflow automatically use GPU.
@@ -26,7 +27,8 @@ def load_cifar10(num_batch_train, num_batch_test, mode='RGB'):
         x_test = tf.image.rgb_to_hsv(x_test)
         x_train, x_test = hsv_to_tuv(x_train), hsv_to_tuv(x_test)
     else:
-        raise NotImplementedError('Input mode is not valid, could be RGB, HSV, TUV, your input: {}'.format(mode))
+        raise NotImplementedError(
+            'Input mode is not valid, could be RGB, HSV, TUV, your input: {}'.format(mode))
     train_slice = tf.data.Dataset.from_tensor_slices((x_train, y_train))
     test_slice = tf.data.Dataset.from_tensor_slices((x_test, y_test))
     train_slice = train_slice.shuffle(x_train.shape[0])
@@ -45,7 +47,7 @@ def inverse_specific_labeled_images(img, label, anomaly_label):
     :param anomaly_label: An integer in range [0, 9].
     :return img: Images with some batch inversed with same shape as input images.
     """
-    assert type(anomaly_label) == int
+    assert isinstance(anomaly_label, int)
     assert anomaly_label >= 0
     assert anomaly_label < 10
     mask_anomaly = tf.where(tf.equal(label, anomaly_label), tf.ones(label.shape), tf.zeros(label.shape))
@@ -71,7 +73,7 @@ def inverse_multiple_labeled_images(img, label, anomaly_label):
     :param anomaly_label: A list of integer of [0, 9]
     :return img: Images with some batch inversed with same shape as input images.
     """
-    assert type(anomaly_label) == list
+    assert isinstance(anomaly_label, list)
     mask_anomaly = tf.where(tf.equal(label, anomaly_label[0]), tf.ones(label.shape), tf.zeros(label.shape))
     for idx, i in enumerate(anomaly_label[1::]):
         # Accumulate the anomaly mask from all of elements in anomaly_label.
@@ -80,13 +82,13 @@ def inverse_multiple_labeled_images(img, label, anomaly_label):
         if idx < len(anomaly_label[1::]):
             # Checking that the idx does not go out of anomaly mask idx.
             mask_anomaly = tf.add(
-                tf.where(tf.equal(label, anomaly_label[idx + 1]), 
+                tf.where(tf.equal(label, anomaly_label[idx + 1]),
                          tf.ones(label.shape), tf.zeros(label.shape)),
                          mask_anomaly)
     # For checking for given labels and anomaly masks work correctly.
     # print(f'label {label}')
     # print(f'mask_anomaly {mask_anomaly}')
-        
+
     if len(img._shape_as_list()) == 4:
         batch_size = mask_anomaly.shape[0]
         mask_anomaly = tf.reshape(mask_anomaly, [batch_size, 1, 1, 1])
@@ -98,7 +100,7 @@ def inverse_multiple_labeled_images(img, label, anomaly_label):
     mask_normal = 1.0 - mask_anomaly
     img = tf.cast(img, tf.float32)
     img = tf.subtract(
-        tf.multiply(tf.ones(img.shape), mask_anomaly), 
+        tf.multiply(tf.ones(img.shape), mask_anomaly),
         tf.multiply(img, mask_anomaly)) + tf.multiply(img, mask_normal)
     return img
 
