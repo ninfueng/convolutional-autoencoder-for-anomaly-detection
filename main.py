@@ -8,7 +8,7 @@ from model import ConvolutionalAutoencoder
 from dataset import load_cifar10, inverse_multiple_labeled_images
 
 parser = argparse.ArgumentParser(description='Tensorflow implementation of autoencoder for anomaly detection')
-parser.add_argument('--epoch', '-e', type=int, default=1, help='Number of training epoch')
+parser.add_argument('--epoch', '-e', type=int, default=100, help='Number of training epoch')
 parser.add_argument('--learning_rate', '-l', type=float, default=9.0, help='Learning rate')
 parser.add_argument('--train_batch', '-trb', type=int, default=128, help='Train batch amount')
 parser.add_argument('--test_batch', '-tb', type=int, default=10000, help='Test batch amount')
@@ -27,7 +27,7 @@ if __name__ == '__main__':
     optimizer = tf.train.GradientDescentOptimizer(learning_rate=args.learning_rate)
     train_data, test_data = load_cifar10(
         num_batch_train=args.train_batch, num_batch_test=args.test_batch, mode=args.mode)
-    
+
     t1 = time.time()
     for i in range(args.epoch):
         if i != 0 and i % args.step_down == 0:
