@@ -1,5 +1,5 @@
 # Convolutional Autoencoder for Anomaly Detection
-This repository is an Tensorflow re-implementation of "Reverse Reconstruction of Anomaly Input Using Autoencoders" from Akihiro Suzuki and Hakaru Tamukoh. The main distinction from the paper is the model included the convolutional related layers to perform better to CIFAR10 dataset. This repository also included the proposed method by Al Aama Obada by converting the images to either HUV or TUV color space instead of RGB space.
+This repository is an Tensorflow re-implementation of "Reverse Reconstruction of Anomaly Input Using Autoencoders" from Akihiro Suzuki and Hakaru Tamukoh. The main distinction from the paper is the model included the convolutional related layers to perform better to CIFAR10 dataset. This repository also included the proposed method by Al Aama Obada and Hakaru Tamukoh by converting the images to either HUV or TUV color space instead of RGB space.
 
 ## Requirements:
   1. Python >= 3.6.8
@@ -24,5 +24,13 @@ MIT license
   author={Akihiro Suzuki and Hakaru Tamukoh},
   address = {Okinawa, Japan},
   year={2018}
+}
+
+@article{tamukoh2020training,
+  title={Training Autoencoder using Three Different Reversed Color Models for Anomaly Detection},
+  author={Tamukoh, Hakaru and others},
+  journal={Journal of Robotics, Networking and Artificial Life},
+  year={2020},
+  publisher={Atlantis Press}
 }
 ```
